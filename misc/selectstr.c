@@ -1,14 +1,14 @@
 /*
-** altmain.c for rework_wireframe in /home/ratouney/bswireframe
+** headergen.c for CPE_2016_BSQ_bootstrap in /home/ratouney/CPE_2016_BSQ_bootstrap
 **
 ** Made by ratouney
 ** Login   <ratouney@epitech.net>
 **
-** Started on  Sun Nov 20 11:36:28 2016 ratouney
-** Last update Mon Dec 12 10:46:59 2016 John Doe
+** Started on  Sun Dec 11 09:59:08 2016 ratouney
+** Last update Sun Dec 11 11:45:49 2016 John Doe
 */
 
-#include "wolf3d.h"
+#include "rtlib.h"
 
 char *selectstr(char *buffer, int from, int to)
 {

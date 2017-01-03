@@ -77,6 +77,84 @@ void mouseloop(t_var *var, t_pos *player)
   prev = mouse;
 }
 
+t_color *colortabgen(int colors, int space)
+{
+  t_color data[colors];
+  int count;
+
+  count = 0;
+  //data = malloc(sizeof(t_color *) * colors);
+  while (count < colors)
+  {
+    data[count].r = 2;
+    //data[count] = malloc(sizeof(t_color));
+    //data[count]->tag = malloc(sizeof(char) * space);
+    count++;
+  }
+  return (data);
+}
+
+void draw_menu(t_var *var, t_my_framebuffer *buffer)
+{
+  int fd;
+  char *line;
+
+  fd = open("bite.xpm", O_RDONLY);
+  get_next_line(fd);
+  get_next_line(fd);
+  line = get_next_line(fd);
+  printf("Config : %s\n", line);
+
+  int count = 1;
+  int save;
+  int x;
+  int y;
+  int colors;
+  int space;
+  while (line[count] >= '0' && line[count] <= '9')
+    count++;
+  x = atoi(selectstr(line, 1, count - 1));
+  printf("X : %d\n", x);
+  count++;
+  save = count;
+  while (line[count] >= '0' && line[count] <= '9')
+    count++;
+  y = atoi(selectstr(line, save, count - 1));
+  printf("Y : %d\n", y);
+  count++;
+  save = count;
+  while (line[count] >= '0' && line[count] <= '9')
+    count++;
+  colors = atoi(selectstr(line, save, count - 1));
+  printf("Color : %d\n", colors);
+  count++;
+  save = count;
+  while (line[count] >= '0' && line[count] <= '9')
+    count++;
+  space = atoi(selectstr(line, save, count - 1));
+  printf("Space : %d\n", space);
+
+  char *tag;
+  int r;
+  int g;
+  int b;
+  int cunt = 0;
+
+  while (cunt < colors)
+  {
+    line = get_next_line(fd);
+    tag = selectstr(line, 1, space);
+    count = space - 1;
+    while (line[++count] != '#')
+      ;
+    r = strtol(selectstr(line, count + 1, count + 2), NULL, 16);
+    g = strtol(selectstr(line, count + 3, count + 4), NULL, 16);
+    b = strtol(selectstr(line, count + 5, count + 6), NULL, 16);
+    printf("Color : %s == [%s] {%d, %d, %d}\n", line, tag, r, g, b);
+    cunt++;
+  }
+}
+
 int main(int argc, char **argv)
 {
   t_wolf *data;
@@ -84,6 +162,7 @@ int main(int argc, char **argv)
   t_pos *player;
   sfEvent event;
   t_my_framebuffer buffer;
+  int menu = 1;
 
   data = setmap(argv[1]);
   var = malloc(sizeof(t_var));
@@ -91,14 +170,24 @@ int main(int argc, char **argv)
   setplayer(argc, argv, player);
   setvar(var, buffer);
   buffer = create_buffer_struct(SCREEN_WIDTH, SCREEN_HEIGHT);
+  draw_menu(var, &buffer);
+  exit(42);
   while (sfRenderWindow_isOpen(var->window))
   {
-    mouseloop(var, player);
-    keyloop(var, event, player, data);
-    draw_background(&buffer);
-    draw_wall(data, player, &buffer, 20);
-    drawmap(data, &buffer, player, 13);
-    playertoggle(data, player, &buffer);
+    if (menu == 1)
+    {
+      draw_menu(var, &buffer);
+      //menu_keys(var, event, data);
+    }
+    else
+    {
+      mouseloop(var, player);
+      keyloop(var, event, player, data);
+      draw_background(&buffer);
+      draw_wall(data, player, &buffer, 20);
+      drawmap(data, &buffer, player, 13);
+      playertoggle(data, player, &buffer);
+    }
     updatepixels(&buffer, var);
   }
   return (0);

@@ -11,9 +11,10 @@
 #ifndef WOLF_H_
 #define WOLF_H_
 
-#include "SFML/Graphics/RenderWindow.h"
+/*#include "SFML/Graphics/RenderWindow.h"
 #include "SFML/Graphics/Sprite.h"
-#include "SFML/Graphics/Texture.h"
+#include "SFML/Graphics/Texture.h"*/
+#include "SFML/Graphics.h"
 #include "SFML/Window/Keyboard.h"
 #include <unistd.h>
 #include <stdlib.h>
@@ -86,11 +87,29 @@ typedef struct s_wolfmap
   int x;
   int y;
 
-  int toggle_hor;
-  int toggle_ver;
-  int toggle_ray;
   int toggle_map;
+  float movement;
+  int show;
+  float angle;
+  float fov;
+  float scanint;
 } t_wolf;
+
+typedef struct s_letter
+{
+  char **c;
+  sfVector2i pos;
+  sfColor front;
+  sfColor back;
+} t_letter;
+
+typedef struct s_color
+{
+  char *tag;
+  int r;
+  int g;
+  int b;
+}              t_color;
 
 typedef struct s_raydata
 {
@@ -170,6 +189,7 @@ void draw_background(t_my_framebuffer *buffer);
 void draw_vertex(t_my_framebuffer *buffer, t_vertex *data);
 t_vertex *vertex_gen(sfVector2i source, sfVector2i destination, sfColor src, sfColor org);
 double dot_pr(t_pos *player, float angle);
+char *get_next_line(int);
 
 #endif /* WOLF_H_ */
 

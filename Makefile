@@ -51,7 +51,7 @@ fclean:	clean
 re:	fclean all clean
 
 opti:
-	echo gcc -Ofast base/*.c main.c map/* misc/* player/* window/* -lc_graph_prog -lm -I./include -o cancerstein >> comp
+	echo gcc -Ofast base/*.c main.c get_next_line.c map/* misc/* player/* window/* -lc_graph_prog -lm -I./include -o cancerstein >> comp
 	chmod 755 comp
 	./comp
 	rm -rf comp
