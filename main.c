@@ -65,16 +65,17 @@ void mouseloop(t_var *var, t_pos *player)
   static sfVector2i mouse;
   static sfVector2i prev;
 
+  prev = dotgen(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
   mouse = sfMouse_getPosition((sfWindow *)var->window);
   if (mouse.x > prev.x)
-    player->angle -= TO_RAD(SCREEN_WIDTH / 360);
+    player->angle -= TO_RAD(SCREEN_WIDTH / 70);
   if (mouse.x < prev.x)
-    player->angle += TO_RAD(SCREEN_WIDTH / 360);
+    player->angle += TO_RAD(SCREEN_WIDTH / 70);
   if (mouse.x > SCREEN_WIDTH)
-    player->angle -= TO_RAD(SCREEN_WIDTH / 360);
+    player->angle -= TO_RAD(SCREEN_WIDTH / 70);
   if (mouse.x < 0)
-    player->angle += TO_RAD(SCREEN_WIDTH / 360);
-  prev = mouse;
+    player->angle += TO_RAD(SCREEN_WIDTH / 70);
+  sfMouse_setPosition(prev,(sfWindow *)var->window);
 }
 
 t_color *colortabgen(int colors, int space)
@@ -135,10 +136,9 @@ void draw_menu(t_var *var, t_my_framebuffer *buffer)
   printf("Space : %d\n", space);
 
   char *tag;
-  int r;
-  int g;
-  int b;
   int cunt = 0;
+  sfColor color;
+  t_color data[colors];
 
   while (cunt < colors)
   {
@@ -147,12 +147,15 @@ void draw_menu(t_var *var, t_my_framebuffer *buffer)
     count = space - 1;
     while (line[++count] != '#')
       ;
-    r = strtol(selectstr(line, count + 1, count + 2), NULL, 16);
-    g = strtol(selectstr(line, count + 3, count + 4), NULL, 16);
-    b = strtol(selectstr(line, count + 5, count + 6), NULL, 16);
-    printf("Color : %s == [%s] {%d, %d, %d}\n", line, tag, r, g, b);
+    data[cunt].r = strtol(selectstr(line, count + 1, count + 2), NULL, 16);
+    data[cunt].g = strtol(selectstr(line, count + 3, count + 4), NULL, 16);
+    data[cunt].b = strtol(selectstr(line, count + 5, count + 6), NULL, 16);
+    data[cunt].color = colorgen(data[cunt].r, data[cunt].g, data[cunt].b, 255);
+    data[cunt].tag = selectstr(line, 1, space);
+    printf("Color : %s == [%s] {%d, %d, %d}\n", line, data[cunt].tag, data[cunt].r, data[cunt].g, data[cunt].b);
     cunt++;
   }
+  
 }
 
 int main(int argc, char **argv)
@@ -162,7 +165,7 @@ int main(int argc, char **argv)
   t_pos *player;
   sfEvent event;
   t_my_framebuffer buffer;
-  int menu = 1;
+  int menu = 0;
 
   data = setmap(argv[1]);
   var = malloc(sizeof(t_var));
@@ -170,8 +173,7 @@ int main(int argc, char **argv)
   setplayer(argc, argv, player);
   setvar(var, buffer);
   buffer = create_buffer_struct(SCREEN_WIDTH, SCREEN_HEIGHT);
-  draw_menu(var, &buffer);
-  exit(42);
+  //draw_menu(var, &buffer);
   while (sfRenderWindow_isOpen(var->window))
   {
     if (menu == 1)
@@ -187,7 +189,7 @@ int main(int argc, char **argv)
       draw_wall(data, player, &buffer, 20);
       drawmap(data, &buffer, player, 13);
       playertoggle(data, player, &buffer);
-    }
+      }
     updatepixels(&buffer, var);
   }
   return (0);

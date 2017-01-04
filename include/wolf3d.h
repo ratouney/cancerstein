@@ -106,6 +106,7 @@ typedef struct s_letter
 typedef struct s_color
 {
   char *tag;
+  sfColor color;
   int r;
   int g;
   int b;
